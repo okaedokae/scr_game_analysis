@@ -1,5 +1,7 @@
 import requests
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.ticker as MaxNLocator
 
 year=2022
 
@@ -63,9 +65,17 @@ while year < 2026:
             else:
                 playoffscores.append(i["alliances"]["blue"]["score"])
     teamsdict[year]["ratequals"] = (wonmatches/len(matches))*100
-    teamsdict[year]["avgrank1"] = (sum(qualscores)/len(qualscores))/teamsdict[year]["maxpoints"]
-    teamsdict[year]["maxrank1"] = max(qualscores)/teamsdict[year]["maxpoints"]
-    teamsdict[year]["avgplay"] = (sum(playoffscores)/len(playoffscores))/teamsdict[year]["maxpoints"]
-    teamsdict[year]["maxplay"] = max(playoffscores)/teamsdict[year]["maxpoints"]
+    teamsdict[year]["avgrank1"] = (sum(qualscores)/len(qualscores))/teamsdict[year]["maxpoints"]*100
+    teamsdict[year]["maxrank1"] = max(qualscores)/teamsdict[year]["maxpoints"]*100
+    teamsdict[year]["avgplay"] = (sum(playoffscores)/len(playoffscores))/teamsdict[year]["maxpoints"]*100
+    teamsdict[year]["maxplay"] = max(playoffscores)/teamsdict[year]["maxpoints"]*100
     year += 1
 print(teamsdict)
+fig, ax = plt.subplots()
+ax.plot(np.array((2022,2023,2024,2025)),np.array((teamsdict[2022]["maxplay"],teamsdict[2023]["maxplay"],teamsdict[2024]["maxplay"],teamsdict[2025]["maxplay"])), color="blue", label="Maximum % in Playoffs")
+ax.plot(np.array((2022,2023,2024,2025)),np.array((teamsdict[2022]["avgplay"],teamsdict[2023]["avgplay"],teamsdict[2024]["avgplay"],teamsdict[2025]["avgplay"])), color="red", label="Average % in Playoffs")
+ax.plot(np.array((2022,2023,2024,2025)),np.array((teamsdict[2022]["maxrank1"],teamsdict[2023]["maxrank1"],teamsdict[2024]["maxrank1"],teamsdict[2025]["maxrank1"])), color="green", label="Maximum % in Qualifications")
+ax.plot(np.array((2022,2023,2024,2025)),np.array((teamsdict[2022]["avgrank1"],teamsdict[2023]["avgrank1"],teamsdict[2024]["avgrank1"],teamsdict[2025]["avgrank1"])), color="yellow", label="Average % in Qualifications")
+ax.set_xticks(range(2022,2026))
+plt.legend()
+plt.show()
