@@ -8,24 +8,32 @@ teamsdict = {
         "maxpoints" : 189,
         "avgrank1" : None,
         "maxrank1": None,
+        "avgplay": None,
+        "maxplay" : None,
         "ratequals": None,
     }, 
     2023 : {
         "maxpoints": 217,  
         "avgrank1" : None,
         "maxrank1": None,
+        "avgplay": None,
+        "maxplay" : None,
         "ratequals": None,
     },
     2024 : {
         "maxpoints": 192,
         "avgrank1" : None,
         "maxrank1": None,
+        "avgplay": None,
+        "maxplay" : None,
         "ratequals": None,
     },
     2025 : {
         "maxpoints": 301,
         "avgrank1" : None,
         "maxrank1": None,
+        "avgplay": None,
+        "maxplay" : None,
         "ratequals": None,
     }
 }
@@ -39,7 +47,6 @@ while year < 2026:
     qualscores = []
     playoffscores = []
     matches = (requests.get(f'https://www.thebluealliance.com/api/v3/team/frc4613/event/{year}ausc/matches/simple',headers=headers)).json()
-    print(year)
     for i in matches:
         if "frc4613" in i["alliances"]["red"]["team_keys"]:
             if i["winning_alliance"] == "red":
@@ -58,4 +65,7 @@ while year < 2026:
     teamsdict[year]["ratequals"] = (wonmatches/len(matches))*100
     teamsdict[year]["avgrank1"] = (sum(qualscores)/len(qualscores))/teamsdict[year]["maxpoints"]
     teamsdict[year]["maxrank1"] = max(qualscores)/teamsdict[year]["maxpoints"]
+    teamsdict[year]["avgplay"] = (sum(playoffscores)/len(playoffscores))/teamsdict[year]["maxpoints"]
+    teamsdict[year]["maxplay"] = max(playoffscores)/teamsdict[year]["maxpoints"]
     year += 1
+print(teamsdict)
