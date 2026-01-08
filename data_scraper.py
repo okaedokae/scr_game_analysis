@@ -5,20 +5,28 @@ year=2022
 
 teamsdict = {
     2022 : {
-        "maxpoints" : None,
-        "rank1" : None,
+        "maxpoints" : 189,
+        "avgrank1" : None,
+        "maxrank1": None,
+        "ratequals": None,
     }, 
     2023 : {
-        "maxpoints": None,  
-        "rank1" : None,
+        "maxpoints": 217,  
+        "avgrank1" : None,
+        "maxrank1": None,
+        "ratequals": None,
     },
     2024 : {
-        "maxpoints": None,
-        "rank1" : None,
+        "maxpoints": 192,
+        "avgrank1" : None,
+        "maxrank1": None,
+        "ratequals": None,
     },
     2025 : {
-        "maxpoints": 300,
-        "rank1" : None,
+        "maxpoints": 301,
+        "avgrank1" : None,
+        "maxrank1": None,
+        "ratequals": None,
     }
 }
 
@@ -27,12 +35,27 @@ headers = {
 }
 
 while year < 2026:
-    matchkeys = (requests.get(f'https://www.thebluealliance.com/api/v3/team/frc4613/event/{year}ausc/matches/keys',headers=headers)).json()
+    wonmatches = 0
+    qualscores = []
+    playoffscores = []
     matches = (requests.get(f'https://www.thebluealliance.com/api/v3/team/frc4613/event/{year}ausc/matches/simple',headers=headers)).json()
     print(year)
     for i in matches:
-        if "frc4613" in matches[matches.index(i)]["alliances"]["red"]["team_keys"]:
-            print(matchkeys[matches.index(i)], matches[matches.index(i)]["alliances"])
+        if "frc4613" in i["alliances"]["red"]["team_keys"]:
+            if i["winning_alliance"] == "red":
+                wonmatches += 1
+            if i["comp_level"] == "qm":
+                qualscores.append(i["alliances"]["red"]["score"])
+            else:
+                playoffscores.append(i["alliances"]["red"]["score"])
         else:
-            print(matches[matches.index(i)]["alliances"])
+            if i["winning_alliance"] == "blue":
+                wonmatches += 1
+            if i["comp_level"] == "qm":
+                qualscores.append(i["alliances"]["blue"]["score"])
+            else:
+                playoffscores.append(i["alliances"]["blue"]["score"])
+    teamsdict[year]["ratequals"] = (wonmatches/len(matches))*100
+    teamsdict[year]["avgrank1"] = (sum(qualscores)/len(qualscores))/teamsdict[year]["maxpoints"]
+    teamsdict[year]["maxrank1"] = max(qualscores)/teamsdict[year]["maxpoints"]
     year += 1
